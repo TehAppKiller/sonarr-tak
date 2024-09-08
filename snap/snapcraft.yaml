@@ -1,0 +1,70 @@
+name: sonarr-tak
+summary: UnOfficial release of Sonarr v4
+description: |
+  Sonarr is a PVR for Usenet and BitTorrent users.
+  It can monitor multiple RSS feeds for new episodes of your favorite shows
+  and will grab, sort and rename them. It can also be configured
+  to automatically upgrade the quality of files already downloaded
+  when a better quality format becomes available.
+
+  The web interface is accessible by default at http://localhost:8989
+
+  See https://sonarr.tv for more details.
+
+  Sonarr Release 4.0.9.2244+
+  Mono is no more required (you can now use HTTPS certificate)
+  Core20 is still required for Sonarr dependencies
+  You must Backup and Restore your configuration for transition from v3 to v4
+  Update All Series to get back Series covers...
+  Service is restarted on any condition.
+
+  Post install commands required to access media folders and see resources :
+  sudo snap connect sonarr-tak:removable-media
+  sudo snap connect sonarr-tak:mount-observe
+license: MIT
+icon: icon.svg
+grade: stable
+confinement: strict
+base: core20
+adopt-info: sonarr
+
+apps:
+  sonarr:
+    command: bin/run-sonarr.sh
+    daemon: simple
+    restart-condition: always
+    plugs:
+      - mount-observe
+      - network
+      - network-bind
+      - removable-media
+
+parts:
+  sonarr:
+    plugin: nil
+    source: 'https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux'
+    source-type: tar
+    override-build: |
+      INST_DIR="$SNAPCRAFT_PART_INSTALL/Sonarr"
+      mkdir -p "$INST_DIR"
+      cp -a * "$INST_DIR"
+
+      snapcraftctl set-version "4.0.1"
+    prime:
+      - Sonarr
+
+  local:
+    plugin: dump
+    source: snap/local
+
+  deps:
+    plugin: dump
+    source: .
+    stage-packages:
+      - liblttng-ust0
+      - sqlite3
+      - wget
+      - libicu66
+    stage:
+      - usr/bin/sqlite*
+      - usr/lib
