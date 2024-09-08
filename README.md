@@ -1,7 +1,7 @@
 # sonarr-tak
 
 ## Snap Description
-Canonical Snap for Sonarr Release 4.0.9.2244+
+Canonical Snap for Sonarr Release 4.0.9.2244+\
 https://snapcraft.io/sonarr-tak
 
 ## Sonarr Description
