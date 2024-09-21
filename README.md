@@ -1,7 +1,7 @@
 # sonarr-tak
 
 ## Snap Description
-Canonical Snap for Sonarr Release 4.0.9.2244+\
+Canonical Snap for Sonarr Release 4+\
 https://snapcraft.io/sonarr-tak
 
 ## Sonarr Description
@@ -16,7 +16,7 @@ See https://sonarr.tv for more details.
 ## Information
 The web interface is accessible by default at http://localhost:8989
 
-Sonarr Release 4.0.9.2244+\
+Sonarr Release 4+\
 Mono is no more required (you can now use HTTPS certificate)\
 Core20 is still required for Sonarr dependencies\
 You must Backup and Restore your configuration for transition from v3 to v4\
