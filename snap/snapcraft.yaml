@@ -1,25 +1,27 @@
 name: sonarr-tak
 summary: UnOfficial release of Sonarr v4
 description: |
-  Sonarr is a PVR for Usenet and BitTorrent users.
+  **Sonarr is a PVR for Usenet and BitTorrent users.**
   It can monitor multiple RSS feeds for new episodes of your favorite shows
   and will grab, sort and rename them. It can also be configured
   to automatically upgrade the quality of files already downloaded
   when a better quality format becomes available.
 
-  The web interface is accessible by default at http://localhost:8989
+  * The web interface is accessible by default at http://localhost:8989
+  * See https://sonarr.tv for more details.
 
-  See https://sonarr.tv for more details.
 
-  Sonarr Release 4.0.9.2244+
-  Mono is no more required (you can now use HTTPS certificate)
-  Core20 is still required for Sonarr dependencies
-  You must Backup and Restore your configuration for transition from v3 to v4
-  Update All Series to get back Series covers...
-  Service is restarted on any condition.
+  **Sonarr Release 4+**
+  * Mono is no more required (you can now use HTTPS certificate)
+  * Core20 is still required for Sonarr dependencies
+  * You must Backup and Restore your configuration for transition from v3 to v4
+  * Update All Series to get back Series covers...
+  * Service is restarted on any condition.
 
-  Post install commands required to access media folders and see resources :
+  **Post install commands required to access media folders and see resources :**
+
   sudo snap connect sonarr-tak:removable-media
+
   sudo snap connect sonarr-tak:mount-observe
 license: MIT
 icon: icon.svg
@@ -45,11 +47,39 @@ parts:
     source: 'https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux'
     source-type: tar
     override-build: |
+      # Get Last Source Tag version and Check Snap (with same Source) version
+      src_version=$(curl -sL "https://services.sonarr.tv/v1/update/main/changes?os=linux&runtime=netcore&arch=x64" | sed -nre "s/^[^0-9]*([0-9\.]*).*/\1/p")
+      echo "Source last tag: ${src_version}"
+      snap_last_version=$(curl -sL --unix-socket /run/snapd.socket http://localhost/v2/find\?q\=sonarr-tak | sed -nre "s/^.*\"version\"\:\"([^\"]*)\".*/\1/p");
+      echo "Snap last version: ${snap_last_version}"
+      snap_build_with_same_version=$(echo $snap_last_version | sed -nre "s/^($src_version.*).*/\1/p");
+      # Same version ?
+      if [ -z "$snap_build_with_same_version" ]
+      then
+        new_snap_version="${src_version}";
+      else
+        # Get snap build version
+        snap_build=$(echo $snap_build_with_same_version | sed -nre 's/^.*-v([0-9]*).*/\1/p');
+        # Already a build version ?
+        if [ -z "$snap_build" ]
+        then
+          # init @v2
+          new_snap_build="2";
+        else
+          # increment @v+1
+          new_snap_build=$(($snap_build+1));
+        fi
+
+        new_snap_version="${src_version}-v${new_snap_build}";
+      fi
+
+      snapcraftctl set-version $new_snap_version
+
+      snapcraftctl build
+
       INST_DIR="$SNAPCRAFT_PART_INSTALL/Sonarr"
       mkdir -p "$INST_DIR"
       cp -a * "$INST_DIR"
-
-      snapcraftctl set-version "4.0.1"
     prime:
       - Sonarr
 
