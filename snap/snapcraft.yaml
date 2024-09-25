@@ -29,6 +29,13 @@ grade: stable
 confinement: strict
 base: core20
 adopt-info: sonarr
+architectures:
+  - build-on: [amd64]
+  - build-on: [arm64]
+  - build-on: [armhf]
+environment:
+  # Ubuntu 20.04 for armhf, ppc64el, riscv64, and s390x
+  CRYPTOGRAPHY_OPENSSL_NO_LEGACY: "1"
 
 apps:
   sonarr:
@@ -44,13 +51,34 @@ apps:
 parts:
   sonarr:
     plugin: nil
-    source: 'https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux'
-    source-type: tar
+    source: .
+    override-pull: |
+      # Architecture
+      case "$SNAPCRAFT_TARGET_ARCH" in
+        amd64) SRC_ARCH="x64" ;;
+        arm64) SRC_ARCH="arm64" ;;
+        armhf) SRC_ARCH="arm" ;;
+      esac
+
+      # Pull
+      cd "$SNAPCRAFT_PART_SRC"
+      rm -rf *
+      wget "https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux&arch=$SRC_ARCH"
+      tar xvf "latest?version=4&os=linux&arch=${SRC_ARCH}"
+
+      snapcraftctl pull
     override-build: |
+      # Architecture
+      case "$SNAPCRAFT_TARGET_ARCH" in
+        amd64) SRC_ARCH="x64" ;;
+        arm64) SRC_ARCH="arm64" ;;
+        armhf) SRC_ARCH="arm" ;;
+      esac
+
       # Get Last Source Tag version and Check Snap (with same Source) version
       src_version=$(curl -sL "https://services.sonarr.tv/v1/update/main/changes?os=linux&runtime=netcore&arch=x64" | sed -nre "s/^[^0-9]*([0-9\.]*).*/\1/p")
       echo "Source last tag: ${src_version}"
-      snap_last_version=$(curl -sL --unix-socket /run/snapd.socket http://localhost/v2/find\?q\=sonarr-tak | sed -nre "s/^.*\"version\"\:\"([^\"]*)\".*/\1/p");
+      snap_last_version=$(curl -sL -H "Snap-Device-Series: 16" "https://api.snapcraft.io/v2/snaps/info/sonarr-tak?architecture=${SNAPCRAFT_TARGET_ARCH}&fields=version" | sed -nre "s/^.*\"stable\"\,\"track\"\:\"latest\"\}\,\"version\"\:\"([^\"]*)\".*/\1/p");
       echo "Snap last version: ${snap_last_version}"
       snap_build_with_same_version=$(echo $snap_last_version | sed -nre "s/^($src_version.*).*/\1/p");
       # Same version ?
@@ -75,11 +103,18 @@ parts:
 
       snapcraftctl set-version $new_snap_version
 
-      snapcraftctl build
-
+      # Build
       INST_DIR="$SNAPCRAFT_PART_INSTALL/Sonarr"
       mkdir -p "$INST_DIR"
-      cp -a * "$INST_DIR"
+      cp -a Sonarr/* $INST_DIR
+
+      snapcraftctl build
+    build-packages:
+      - curl
+      - wget
+    override-prime: |
+      snapcraftctl prime
+      chmod +rx $SNAPCRAFT_PRIME/bin/run-sonarr.sh
     prime:
       - Sonarr
 
@@ -88,12 +123,11 @@ parts:
     source: snap/local
 
   deps:
-    plugin: dump
+    plugin: nil
     source: .
     stage-packages:
       - liblttng-ust0
       - sqlite3
-      - wget
       - libicu66
     stage:
       - usr/bin/sqlite*
