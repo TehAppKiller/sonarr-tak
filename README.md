@@ -28,3 +28,12 @@ Post install commands required to access media folders and see resources :
 sudo snap connect sonarr-tak:removable-media
 sudo snap connect sonarr-tak:mount-observe
 ```
+
+## FAQ
+See my common doc about [FAQ](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#FAQ).
+
+## Building
+The snap requires Core20 for .NET source dependencies.\
+See my common doc about [building a snap](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#Building).
+## Versionning
+See my common doc about [versionning](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#Versionning).
