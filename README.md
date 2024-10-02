@@ -1,5 +1,7 @@
 # sonarr-tak
 
+[![sonarr-tak](https://snapcraft.io/sonarr-tak/badge.svg)](https://snapcraft.io/sonarr-tak)
+
 ## Snap Description
 Canonical Snap for Sonarr Release 4+\
 https://snapcraft.io/sonarr-tak
