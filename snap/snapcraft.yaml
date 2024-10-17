@@ -13,7 +13,7 @@ description: |
 
   **Sonarr Release 4+**
   * Mono is no more required (you can now use HTTPS certificate)
-  * Core20 is still required for Sonarr dependencies
+  * Core20 is still required for dependencies
   * You must Backup and Restore your configuration for transition from v3 to v4
   * Update All Series to get back Series covers...
   * Service is restarted on any condition.
@@ -32,7 +32,7 @@ adopt-info: sonarr
 architectures:
   - build-on: [amd64]
   - build-on: [arm64]
-#  - build-on: [armhf] # Fail OpenSSL even with environment variable set
+  - build-on: [armhf]
 
 apps:
   sonarr:
@@ -43,6 +43,7 @@ apps:
       - mount-observe
       - network
       - network-bind
+      - home
       - removable-media
 
 parts:
@@ -58,10 +59,9 @@ parts:
       esac
 
       # Pull
-      cd "$SNAPCRAFT_PART_SRC"
-      rm -rf *
-      wget "https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux&arch=$SRC_ARCH"
-      tar xvf "latest?version=4&os=linux&arch=${SRC_ARCH}"
+      rm -rf $SNAPCRAFT_PART_SRC/{,.[!.],..?}*
+      wget "https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux&arch=$SRC_ARCH" -O srcfile
+      tar xvf srcfile
 
       snapcraftctl pull
     override-build: |
@@ -73,7 +73,7 @@ parts:
       esac
 
       # Get Last Source Tag version and Check Snap (with same Source) version
-      src_version=$(curl -sL "https://services.sonarr.tv/v1/update/main/changes?os=linux&runtime=netcore&arch=x64" | sed -nre "s/^[^0-9]*([0-9\.]*).*/\1/p")
+      src_version=$(curl -sL "https://services.sonarr.tv/v1/update/main/changes?os=linux&runtime=netcore&arch=$SRC_ARCH" | sed -nre "s/^[^0-9]*([0-9\.]*).*/\1/p")
       echo "Source last tag: ${src_version}"
       snap_last_version=$(curl -sL -H "Snap-Device-Series: 16" "https://api.snapcraft.io/v2/snaps/info/sonarr-tak?architecture=${SNAPCRAFT_TARGET_ARCH}&fields=version" | sed -nre "s/^.*\"stable\"\,\"track\"\:\"latest\"\}\,\"version\"\:\"([^\"]*)\".*/\1/p");
       echo "Snap last version: ${snap_last_version}"
@@ -109,15 +109,16 @@ parts:
     build-packages:
       - curl
       - wget
-    override-prime: |
-      snapcraftctl prime
-      chmod +rx $SNAPCRAFT_PRIME/bin/run-sonarr.sh
+      - libssl-dev
     prime:
       - Sonarr
 
   local:
     plugin: dump
     source: snap/local
+    override-prime: |
+      snapcraftctl prime
+      chmod +rx $SNAPCRAFT_PRIME/bin/run-sonarr.sh
 
   deps:
     plugin: nil
