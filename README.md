@@ -23,7 +23,6 @@ The web interface is accessible by default at http://localhost:8989
 
 Sonarr Release 4+\
 Mono is no more required (you can now use HTTPS certificate)\
-Core20 is still required for dependencies\
 You must Backup and Restore your configuration for transition from v3 to v4\
 Update All Series to get back Series covers...\
 Service is restarted on any condition.
