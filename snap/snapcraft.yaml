@@ -1,5 +1,6 @@
 name: sonarr-tak
-summary: UnOfficial release of Sonarr v4
+title: sonarr-tak
+summary: UnOfficial release of Sonarr
 description: |
   **Sonarr is a PVR for Usenet and BitTorrent users.**
   It can monitor multiple RSS feeds for new episodes of your favorite shows
@@ -11,10 +12,7 @@ description: |
   * See https://sonarr.tv for more details.
 
 
-  **Sonarr Release 4+**
-  * Mono is no more required (you can now use HTTPS certificate)
-  * You must Backup and Restore your configuration for transition from v3 to v4
-  * Update All Series to get back Series covers...
+  **Sonarr Release**
   * Service is restarted on any condition.
 
   **Post install commands required to access media folders and see resources :**
@@ -37,7 +35,7 @@ license: MIT
 icon: icon.svg
 grade: stable
 confinement: strict
-base: core24
+base: core26
 adopt-info: sonarr
 platforms:
   amd64:
@@ -162,7 +160,7 @@ parts:
       - liburcu8t64
       - libnuma1
       - sqlite3
-      - libicu74
+      - libicu78
     prime:
       - usr/bin/sqlite*
       - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/*.so*

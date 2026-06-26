@@ -5,7 +5,7 @@
 ![snap size](https://badgen.net/snapcraft/size/sonarr-tak/amd64/stable)
 
 ## Snap Description
-Canonical Snap for Sonarr Release 4+\
+Canonical Snap for Sonarr\
 https://snapcraft.io/sonarr-tak
 
 ## Sonarr Description
@@ -21,10 +21,7 @@ See https://sonarr.tv for more details.
 ## Information
 The web interface is accessible by default at http://localhost:8989
 
-Sonarr Release 4+\
-Mono is no more required (you can now use HTTPS certificate)\
-You must Backup and Restore your configuration for transition from v3 to v4\
-Update All Series to get back Series covers...\
+Sonarr Release\
 Service is restarted on any condition.
 
 Post install commands required to access media folders and see resources :
@@ -40,9 +37,9 @@ This is due to current behavior and restrictions of snaps by Canonical.\
 Check common doc in FAQ if you want to setup data in /home directory.
 
 ## FAQ
-See my common doc about [FAQ](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#FAQ).
+See common doc about [FAQ](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#FAQ).
 
 ## Building
-See my common doc about [building a snap](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#Building).
+See common doc about [building a snap](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#Building).
 ## Versionning
-See my common doc about [versionning](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#Versionning).
+See common doc about [versionning](https://github.com/TehAppKiller/Snapcraft-common-doc/tree/main#Versionning).
