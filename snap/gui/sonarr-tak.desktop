@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Sonarr-tak
+Comment=Open webUI
+Type=Application
+Exec=sonarr-tak
+Icon=${SNAP}/meta/gui/icon.svg
